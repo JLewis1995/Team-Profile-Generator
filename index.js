@@ -4,7 +4,13 @@ const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
 const inquirer = require("inquirer");
 const { type } = require("os");
+const { inherits } = require("util");
 const teamMembers = [];
+
+function init() {
+  html();
+  newTeam();
+}
 
 function newTeam() {
   inquirer
@@ -37,6 +43,7 @@ function newTeam() {
     .then(function ({ name, id, email, officeNumber }) {
       let newManager = new Manager(name, id, email, officeNumber);
       teamMembers.push(newManager);
+      toHTML(newManager);
       addMember();
     });
 }
@@ -84,7 +91,8 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Engineer(name, id, email, github);
             teamMembers.push(newTeamMember);
-            console.log(teamMembers);
+            toHTML(newTeamMember);
+            addMore();
           });
       } else {
         inquirer
@@ -99,27 +107,137 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Intern(name, id, email, school);
             teamMembers.push(newTeamMember);
-            console.log(teamMembers);
+            toHTML(newTeamMember);
+            addMore();
           });
       }
     });
 }
 
 function addMore() {
-  inquirer.prompt([
-    {
-      type: "list",
-      message: "Would you like to add more members to the team?",
-      choices: ["Yes", "No"],
-      name: "more",
-    },
-  ]);
-  if (more === "Yes") {
-    addMember();
-  } else {
-    // put output funciton here ********************************
-    console.log(teamMembers);
-  }
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Would you like to add more members to the team?",
+        choices: ["Yes", "No"],
+        name: "more",
+      },
+    ])
+    .then(function ({ more }) {
+      if (more === "Yes") {
+        addMember();
+      } else {
+        htmlSTOP();
+      }
+    });
 }
 
-newTeam();
+function html() {
+  const starter = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>Team Profile</title>
+</head>
+<body>
+    <nav style="height: 75px" class="navbar navbar-light bg-secondary bg-opacity-50 mb-4">
+        <h1 class="mx-auto text-light">My Team</h1>
+      </nav>
+
+
+      <div class="container">
+        <div class="row mx-auto">
+          `;
+  fs.writeFile("./output/teamProfile.html", starter, function (error) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+
+function toHTML(name) {
+  const emp = name.getName();
+  const role = name.getRole();
+  const id = name.getId();
+  const email = name.getEmail();
+  let toAppend;
+
+  if (role === "Manager") {
+    const officeNumber = name.getOfficeNumber();
+    toAppend = `
+    <div class="col-5 col-lg-3  mx-3 px-3">
+        <div class="card mx-3 px-3" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">${emp}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Id: ${id}</li>
+              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+              <li class="list-group-item">Office Number: ${officeNumber}</li>
+            </ul>
+          </div>
+          </div>
+          </div>
+
+      `;
+  } else if (role === "Engineer") {
+    const github = name.getGitHub();
+    toAppend = `
+    <div class="col-5 col-lg-3  mx-3 px-3">
+        <div class="card mx-3 px-3" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">${emp}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Id: ${id}</li>
+              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+              <li class="list-group-item">GitHub Profile: <a href="https://github.com/${github}">${github}</a></li>
+            </ul>
+          </div>
+          </div>
+          </div>
+
+      `;
+  } else if (role === "Intern") {
+    const school = name.getSchool();
+    toAppend = `
+    <div class="col-5 col-lg-3  mx-3 px-3">
+        <div class="card mx-3 px-3" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">${emp}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Id: ${id}</li>
+              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+              <li class="list-group-item">School: ${school}</li>
+            </ul>
+          </div>
+          </div>
+          </div>
+
+      `;
+  } else {
+    console.log(`I am broken`);
+    return;
+  }
+  fs.appendFile("./output/teamProfile.html", toAppend, function (error) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+
+function htmlSTOP() {
+  let final = `</body>
+  </html>`;
+  fs.appendFile("./output/teamProfile.html", final, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
+init();
