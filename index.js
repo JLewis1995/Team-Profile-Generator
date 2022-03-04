@@ -8,7 +8,7 @@ const { inherits } = require("util");
 const teamMembers = [];
 
 function init() {
-  html();
+  htmlSTART();
   newTeam();
 }
 
@@ -43,7 +43,7 @@ function newTeam() {
     .then(function ({ name, id, email, officeNumber }) {
       let newManager = new Manager(name, id, email, officeNumber);
       teamMembers.push(newManager);
-      toHTML(newManager);
+      addToHTML(newManager);
       addMember();
     });
 }
@@ -91,7 +91,7 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Engineer(name, id, email, github);
             teamMembers.push(newTeamMember);
-            toHTML(newTeamMember);
+            addToHTML(newTeamMember);
             addMore();
           });
       } else {
@@ -107,7 +107,7 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Intern(name, id, email, school);
             teamMembers.push(newTeamMember);
-            toHTML(newTeamMember);
+            addToHTML(newTeamMember);
             addMore();
           });
       }
@@ -133,7 +133,7 @@ function addMore() {
     });
 }
 
-function html() {
+function htmlSTART() {
   const starter = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,7 +158,7 @@ function html() {
   });
 }
 
-function toHTML(name) {
+function addToHTML(name) {
   const emp = name.getName();
   const role = name.getRole();
   const id = name.getId();
@@ -168,55 +168,55 @@ function toHTML(name) {
   if (role === "Manager") {
     const officeNumber = name.getOfficeNumber();
     toAppend = `
-    <div class="col-5 col-lg-3  mx-3 px-3">
-        <div class="card mx-3 px-3" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">${emp}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Id: ${id}</li>
-              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
-              <li class="list-group-item">Office Number: ${officeNumber}</li>
-            </ul>
-          </div>
-          </div>
-          </div>
+    <div class="col-5 col-lg-3  m-3 p-3">
+    <div class="card m-3 p-3 " style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">${emp}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Id: ${id}</li>
+          <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+          <li class="list-group-item">Office Number: ${officeNumber}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
       `;
   } else if (role === "Engineer") {
     const github = name.getGitHub();
     toAppend = `
-    <div class="col-5 col-lg-3  mx-3 px-3">
-        <div class="card mx-3 px-3" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">${emp}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Id: ${id}</li>
-              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
-              <li class="list-group-item">GitHub Profile: <a href="https://github.com/${github}">${github}</a></li>
-            </ul>
-          </div>
-          </div>
-          </div>
+    <div class="col-5 col-lg-3  m-3 p-3">
+    <div class="card m-3 p-3 " style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">${emp}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Id: ${id}</li>
+          <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+          <li class="list-group-item">GitHub Profile: <a href="https://github.com/${github}">${github}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
       `;
   } else if (role === "Intern") {
     const school = name.getSchool();
     toAppend = `
-    <div class="col-5 col-lg-3  mx-3 px-3">
-        <div class="card mx-3 px-3" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">${emp}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Id: ${id}</li>
-              <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
-              <li class="list-group-item">School: ${school}</li>
-            </ul>
-          </div>
-          </div>
-          </div>
+    <div class="col-5 col-lg-3  m-3 p-3">
+    <div class="card m-3 p-3 " style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">${emp}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${role}</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Id: ${id}</li>
+          <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+          <li class="list-group-item">School: ${school}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
       `;
   } else {
