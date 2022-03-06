@@ -8,7 +8,7 @@ const { inherits } = require("util");
 const teamMembers = [];
 
 function init() {
-  htmlSTART();
+  markdownBegin();
   newTeam();
 }
 
@@ -43,7 +43,7 @@ function newTeam() {
     .then(function ({ name, id, email, officeNumber }) {
       let newManager = new Manager(name, id, email, officeNumber);
       teamMembers.push(newManager);
-      addToHTML(newManager);
+      markdownCardAddition(newManager);
       addMember();
     });
 }
@@ -91,7 +91,7 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Engineer(name, id, email, github);
             teamMembers.push(newTeamMember);
-            addToHTML(newTeamMember);
+            markdownCardAddition(newTeamMember);
             addMore();
           });
       } else {
@@ -107,7 +107,7 @@ function addMember() {
             let newTeamMember;
             newTeamMember = new Intern(name, id, email, school);
             teamMembers.push(newTeamMember);
-            addToHTML(newTeamMember);
+            markdownCardAddition(newTeamMember);
             addMore();
           });
       }
@@ -128,12 +128,12 @@ function addMore() {
       if (more === "Yes") {
         addMember();
       } else {
-        htmlSTOP();
+        markdownStop();
       }
     });
 }
 
-function htmlSTART() {
+function markdownBegin() {
   const starter = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,7 +158,7 @@ function htmlSTART() {
   });
 }
 
-function addToHTML(name) {
+function markdownCardAddition(name) {
   const emp = name.getName();
   const role = name.getRole();
   const id = name.getId();
@@ -230,7 +230,7 @@ function addToHTML(name) {
   });
 }
 
-function htmlSTOP() {
+function markdownStop() {
   let final = `</body>
   </html>`;
   fs.appendFile("./output/teamProfile.html", final, function (err) {
