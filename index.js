@@ -1,3 +1,4 @@
+// require all files
 const fs = require("fs");
 const Manager = require("./lib/manager");
 const Engineer = require("./lib/engineer");
@@ -7,11 +8,13 @@ const { type } = require("os");
 const { inherits } = require("util");
 const teamMembers = [];
 
+// init function to begin
 function init() {
   markdownBegin();
   newTeam();
 }
 
+// create new team per instructions each time we start
 function newTeam() {
   inquirer
     .prompt([
@@ -40,6 +43,7 @@ function newTeam() {
         name: "officeNumber",
       },
     ])
+    // promise to create manager profile - also add to html doc
     .then(function ({ name, id, email, officeNumber }) {
       let newManager = new Manager(name, id, email, officeNumber);
       teamMembers.push(newManager);
@@ -48,6 +52,7 @@ function newTeam() {
     });
 }
 
+// adding team member function (called automatically 1st time, on demand after)
 function addMember() {
   inquirer
     .prompt([
@@ -76,6 +81,7 @@ function addMember() {
         name: "role",
       },
     ])
+    // promise with promises within to determine role and applicable next question - also create this profile and add to html doc
     .then(function ({ name, role, id, email }) {
       if (role === "engineer") {
         inquirer
@@ -92,7 +98,7 @@ function addMember() {
             newTeamMember = new Engineer(name, id, email, github);
             teamMembers.push(newTeamMember);
             markdownCardAddition(newTeamMember);
-            addMore();
+            addAnotherTeamMember();
           });
       } else {
         inquirer
@@ -108,13 +114,14 @@ function addMember() {
             newTeamMember = new Intern(name, id, email, school);
             teamMembers.push(newTeamMember);
             markdownCardAddition(newTeamMember);
-            addMore();
+            addAnotherTeamMember();
           });
       }
     });
 }
 
-function addMore() {
+// function to determine if more team members are wanted or not
+function addAnotherTeamMember() {
   inquirer
     .prompt([
       {
@@ -133,6 +140,7 @@ function addMore() {
     });
 }
 
+// function to begin creating markdown
 function markdownBegin() {
   const starter = `<!DOCTYPE html>
 <html lang="en">
@@ -151,6 +159,7 @@ function markdownBegin() {
       <div class="container">
         <div class="row mx-auto">
           `;
+  // write/create teamProfile html document
   fs.writeFile("./output/teamProfile.html", starter, function (error) {
     if (error) {
       console.log(error);
@@ -158,6 +167,7 @@ function markdownBegin() {
   });
 }
 
+// function to create cards and add to markdown based on role
 function markdownCardAddition(name) {
   const emp = name.getName();
   const role = name.getRole();
@@ -223,6 +233,7 @@ function markdownCardAddition(name) {
     console.log(`I am broken`);
     return;
   }
+  // append profile created above to current html doc
   fs.appendFile("./output/teamProfile.html", toAppend, function (error) {
     if (error) {
       console.log(error);
@@ -230,6 +241,7 @@ function markdownCardAddition(name) {
   });
 }
 
+// function to complete markdown
 function markdownStop() {
   let final = `</body>
   </html>`;
@@ -240,4 +252,5 @@ function markdownStop() {
   });
 }
 
+// call init on load
 init();
