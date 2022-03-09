@@ -4,7 +4,7 @@
   "description": "terminal interface to output HTML doc with team profiles on cards",
   "main": "help.js",
   "scripts": {
-    "test": "npm test",
+    "test": "jest",
     "start": "node index"
   },
   "repository": {
