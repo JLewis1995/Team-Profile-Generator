@@ -22,19 +22,19 @@ function newTeam() {
         type: "input",
         message: "Please enter the Team Manager's Name:",
         name: "name",
-        default: "Ex. John Smith",
+        default: "John Smith",
       },
       {
         type: "input",
         message: "What is their Employee ID Number?:",
         name: "id",
-        default: "Ex. 1",
+        default: "1",
       },
       {
         type: "input",
         message: "What is their Email Address?:",
         name: "email",
-        default: "Ex. jsmith@example.com",
+        default: "jsmith@example.com",
       },
       {
         type: "list",
